@@ -1,5 +1,7 @@
-# from langchain
-#
-# class rag:
-#     self.data = data
-#     self.
+from langchain
+
+class GmailTool:
+    def __init(self):
+
+
+    def send_mail(self, query):

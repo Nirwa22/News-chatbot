@@ -12,18 +12,18 @@ class GoogleSearchTool:
     description = """Use this tool when you can not find relevant content related to Pakistan's history
                      in vector database. Input to this tool will be a string query."""
 
-    def __init__(self, query):
-        self.query = query
+    def __init__(self):
+        self.search_method = SerpAPIWrapper()
         pass
 
-    def search_function(self):
-        return SerpAPIWrapper().run(self.query)
+    def search_function(self, query):
+        return self.search_method.run(query)
 
 
 google_search_tool = Tool.from_function(
-    name=GoogleSearchTool.name,
-    description=GoogleSearchTool.description,
-    func=GoogleSearchTool.search_function,
+    name=GoogleSearchTool().name,
+    description=GoogleSearchTool().description,
+    func=GoogleSearchTool().search_function,
     return_direct=True
 )
 

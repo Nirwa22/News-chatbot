@@ -12,16 +12,16 @@ class NewsTool:
     description = """Use this tool when you have to answer queries regarding Pakistan's news.
                      Input to this tool will be a string query."""
 
-    def __init__(self, query):
-        self.query = query
+    def __init__(self):
+        self.search_method = SerpAPIWrapper()
         pass
 
-    def search_function(self):
-        return SerpAPIWrapper().run(self.query)
+    def search_function(self, query):
+        return self.search_method.run(query)
 
 
-tool_news = Tool.from_function(name=NewsTool.name,
-                               description=NewsTool.description,
-                               func=NewsTool.search_function,
+tool_news = Tool.from_function(name=NewsTool().name,
+                               description=NewsTool().description,
+                               func=NewsTool().search_function,
                                return_direct=True
                                )
