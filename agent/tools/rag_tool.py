@@ -1,8 +1,10 @@
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
-from langchain.chains import conversational_retrieval
-from langchain.tools import Tool
-from langchain.vectorstores import FAISS
-from langchain.document_loaders import PyPDFLoader, TextLoader, Docx2txtLoader
+from langchain.chains import create_retrieval_chain
+from langchain.chains.combine_documents import create_stuff_documents_chain
+from langchain.prompts import ChatPromptTemplate
+from langchain.retrievers.document_compressors import LLMChainExtractor
+from langchain_community.tools import Tool
+from langchain_community.vectorstores import FAISS
 # from vector_database import VectorDatabase
 from dotenv import load_dotenv
 import os
@@ -18,15 +20,19 @@ class RagTool:
 
     def __init__(self):
         self.embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
-        # self.llm = ChatOpenAI(model="gpt-4o-mini", temperature=1)
+        self.llm = ChatOpenAI(model="gpt-4o-mini", temperature=1)
         self.retriever = FAISS.load_local("vector_store",
                                           embeddings=self.embeddings,
                                           allow_dangerous_deserialization=True)
+        self.prompt =
 
     def retriever(self, query):
         new_retriever = self.retriever.as_retriever(search_type="mmr", search_kwargs={"score_threshold": 0.7, "k": 1})
-        answer = new_retriever.invoke(query)
-        return answer
+        system_prompt = "you are a humorous ai assistant.Answer base on the following retrieved documents: {context}"
+        prompt = ChatPromptTemplate.from_messages([("system", system_prompt),
+                                                   ("human", "{input}")])
+        response = create_retrieval_chain(new_retriever, create_stuff_documents_chain(self.llm, prompt))
+        return response.invoke({"input": query})
 
     # def add_embeddings(self, data):
     #     vb = VectorDatabase(data).vector_store()
