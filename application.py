@@ -1,6 +1,6 @@
 # from agent.agent_executor import Agent
 from dotenv import load_dotenv
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, UploadFile
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 import os
@@ -22,9 +22,10 @@ application.add_middleware(
     allow_headers=["*"]
 )
 
+
 class Item(BaseModel):
     query: str
-    data: str | None = None # Making parameter optional
+    data: bytes | None = None
 
 
 @application.get("/")

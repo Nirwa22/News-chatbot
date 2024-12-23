@@ -1,13 +1,14 @@
 # from agent.agent_prompt import agent_prompt
 from langchain import hub
-from langchain.agents import AgentExecutor, create_react_agent, create_tool_calling_agent
-# from langchain.runnables import openai_functions
+from langchain.agents import AgentExecutor, create_react_agent
+from langchain.memory import ConversationBufferMemory
 from langchain_openai import ChatOpenAI
 # from tools.gmail_tool import
 from tools.rag_tool import tool_rag
 from tools.news_tool import tool_news
 from tools.googleapi_search import google_search_tool
 from dotenv import load_dotenv
+import json
 import os
 
 load_dotenv()
@@ -19,7 +20,7 @@ class Agent:
         self.tool_kit = [tool_news, google_search_tool, tool_rag]
         self.llm = ChatOpenAI(model="gpt-4o-mini", temperature=1, stream=True)
         self.agent_prompt = hub.pull("hwchase17/react")
-        # self.memory = memory
+        self.memory = ConversationBufferMemory(memory_key="chat_history")
 
     def create_agent(self):
         agent = create_react_agent(self.llm,
@@ -32,10 +33,12 @@ class Agent:
         agent_executor = AgentExecutor(agent=self.create_agent(),
                                        tools=self.tool_kit,
                                        verbose=True,
-                                       handle_parsing_errors=True)
-        response = str(agent_executor.stream({"input": query}))
-        return response
+                                       handle_parsing_errors=True,
+                                       memory=self.memory)
+        response = str(agent_executor.invoke({"input": self.memory}))
+        # self.memory.asave_context({"input": query}, {"output": response})
+        return str(response)
 
 
-for chunk in Agent().agent_execution("what happened in 1947 for pakistan"):
-    print(chunk)
+print(Agent().agent_execution("hi i am sara"))
+# print(json.loads("Action Input:"))
