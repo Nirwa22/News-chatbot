@@ -1,4 +1,4 @@
-# from agent.agent_executor import Agent
+from agent_executor import AgentReact
 from dotenv import load_dotenv
 from fastapi import FastAPI, Request, UploadFile
 from pydantic import BaseModel
@@ -39,7 +39,7 @@ async def vector_database(request: Request, item: Item):
     if api == Api_token:
         query = item.query
         if query:
-            output = Agent().agent_execution(query)["output"]
+            output = AgentReact().agent_execution(query)["output"]
             return output
         else:
             return {"message": "Please enter your query"}

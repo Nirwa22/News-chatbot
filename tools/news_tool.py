@@ -10,7 +10,8 @@ serpapi_api_key = os.getenv("SERPAPI_API_KEY")
 class NewsTool:
     name = "News tool"
     description = """Use this tool when you have to answer queries regarding Pakistan's news.
-                     Input to this tool will be a string query."""
+                     Provide latest news. Input to this tool will be a string query. Change output from the
+                     tool to a paragraph always"""
 
     def __init__(self):
         self.search_method = SerpAPIWrapper()

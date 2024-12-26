@@ -13,8 +13,8 @@ llm = ChatOpenAI(model="gpt-4o-mini", temperature=1)
 class GoogleSearchTool:
     name = "Google search tool"
     description = """Use this tool when you can not find relevant content related to Pakistan's history
-                     in vector database. For things outside the scope of pakistan's news and history
-                     do not use the tool whatsoever. Input to this tool will be a string query. Output must
+                     in vector database. For input queries outside the scope of pakistan's news and history
+                     you must not use this tool at all. Input to this tool will be a string query. Output must
                      be a 5-6 line paragraph"""
 
     def __init__(self):

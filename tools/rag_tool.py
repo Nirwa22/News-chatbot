@@ -37,7 +37,7 @@ class RagTool:
             data = json.loads(Param.file)
             Param.retriever.add_documents(VectorDatabase().text_loader_splitter(data))
         new_retriever = Param.retriever.as_retriever(search_type="mmr", search_kwargs={"score_threshold": 0.7, "k": 1})
-        system_prompt = "you are a humorous ai assistant.Answer based on the following retrieved documents: {context}"
+        system_prompt = "Answer based on the following retrieved documents: {context}"
         prompt = ChatPromptTemplate.from_messages([("system", system_prompt),
                                                    ("human", "{input}")])
 
