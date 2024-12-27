@@ -1,14 +1,20 @@
 from dotenv import load_dotenv
+from langchain.chains import create_retrieval_chain
+from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain_community.utilities import SerpAPIWrapper
 from langchain_core.tools import tool
 from langchain_openai import ChatOpenAI
+from langchain.prompts import ChatPromptTemplate
 from langchain.tools import Tool
+from vector_database import VectorDatabase
+import json
 import os
 
 load_dotenv()
 serpapi_api_key = os.getenv("SERPAPI_API_KEY")
 os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
 llm = ChatOpenAI(model="gpt-4o-mini", temperature=1)
+
 
 class GoogleSearchTool:
     name = "Google search tool"
@@ -19,10 +25,17 @@ class GoogleSearchTool:
 
     def __init__(self):
         self.search_method = SerpAPIWrapper()
-        pass
+        self.llm = ChatOpenAI(model="gpt-4o-mini", temperature=1)
 
     def search_function(self, query):
-        return self.search_method.run(query)
+        retrieved_content_from_google = json.dumps(self.search_method.run(query))
+        retriever = VectorDatabase().text_loader_splitter_vs(retrieved_content_from_google)
+        new_retriever = retriever.as_retriever(search_type="mmr", search_kwargs={"score_threshold": 0.7, "k": 1})
+        system_prompt = "Answer based on the following retrieved documents: {context}"
+        prompt = ChatPromptTemplate.from_messages([("system", system_prompt),
+                                                   ("human", "{input}")])
+        response = create_retrieval_chain(new_retriever, create_stuff_documents_chain(self.llm, prompt))
+        return response.invoke({"input": query})["answer"]
 
 
 google_search_tool = Tool.from_function(
@@ -31,7 +44,3 @@ google_search_tool = Tool.from_function(
     func=GoogleSearchTool().search_function,
     return_direct=True
 )
-
-# r = GoogleSearchTool().search_function("who is Nawaz Sharif")
-# print(r)
-# print(type(r))

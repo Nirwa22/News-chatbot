@@ -25,6 +25,7 @@ application.add_middleware(
 
 class Item(BaseModel):
     query: str
+    chat_history: str | None = None
     data: bytes | None = None
 
 
@@ -38,8 +39,11 @@ async def vector_database(request: Request, item: Item):
     api = request.headers.get("Authorization")
     if api == Api_token:
         query = item.query
+        chat_history = item.chat_history
         if query:
-            output = AgentReact().agent_execution(query)["output"]
+            chat_history = chat_history + f"Human: {query}"
+            print(chat_history)
+            output = AgentReact().agent_execution(chat_history)["output"]
             return output
         else:
             return {"message": "Please enter your query"}

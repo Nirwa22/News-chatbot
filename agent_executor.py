@@ -23,37 +23,40 @@ class AgentReact:
         self.llm = ChatOpenAI(model="gpt-4o-mini", temperature=1, stream=True)
         self.prompt = hub.pull("hwchase17/react")
         self.memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
-        self.template = '''You are a very helpful AI Assistant.
-                            Always reply in a formal manner and in form of a paragraph.
-                            Answer the following questions as best you can.
-                            You have access to the following tools:
-                            {tools} but do not take a tool's output as final output. Modify it to
-                            a representable form by following the below instructions:
-                            1. Output must be paragraph based
-                            For queries outside the scope of Pakistan's news and history do
-                            not use the tools whatsoever and do not reply at all.
+        self.template = '''You are a helpful AI Pakistan's news and history Assistant designed to provide answers only about Pakistan's history
+                           and news. However if the user's general queries like greetings reply politely. 
+                           Maintain a formal tone in all responses and start every conversation by introducing yourself. Follow these guidelines:
+                           1. If a user's query falls outside the scope of Pakistan's history or news, politely 
+                           respond that this information is out of your knowledge base's scope.
+                           2. For questions about Pakistan's army, intelligence agencies, or any sensitive information
+                              about military or agency personnel, do not provide a direct answer. Instead, reply that you
+                              need to verify the user's authorization to access such sensitive information. Follow this by asking for the user's name and Gmail address.
+                        Answer the following questions as best you can. You have access to the following tools:
 
-                            Use the following format:
-
-                            Question: the input question you must answer
-                            Thought: you should always think about what to do
-                            Action: the action to take, should be one of [{tool_names}]
-                            Action Input: the input to the action
-                            Observation: the result of the action
-                            ... (this Thought/Action/Action Input/Observation can repeat N times)
-                            Thought: I now know the final answer but I need to make sure it is in paragraph form.If not
-                            then use the llm to do so.
-                            Final Answer: the final answer to the original input question. Must be a paragraph always
-                            ans set a poetic tone
-
-                            Begin!
-
-                            Question: {input}
-                            Thought:{agent_scratchpad}'''
+                        {tools}
+                        
+                        Use the following format:
+                        
+                        Question: the input question you must answer
+                        Thought: you should always think about what to do
+                        Action: the action to take, should be one of [{tool_names}]
+                        Action Input: the input to the action
+                        Observation: the result of the action
+                        ... (this Thought/Action/Action Input/Observation can repeat N times)
+                        Thought: I now know the final answer
+                        Final Answer: the final answer to the original input question
+                        
+                        Begin!
+                        
+                        Question: {input}
+                        Thought:{agent_scratchpad}
+                        None
+                        '''
 
     def agent_prompt(self):
         prompt_template = ChatPromptTemplate.from_messages(
-            [("system", self.template)])
+            [("system", self.template),
+             MessagesPlaceholder(variable_name="chat_history")])
         return prompt_template
 
     def create_agent(self):
@@ -67,10 +70,13 @@ class AgentReact:
                                        tools=self.tool_kit,
                                        verbose=True,
                                        handle_parsing_errors=True,
-                                       memory=self.memory)
+                                       memory=self.memory,
+                                       max_execution_time=40)
+                                       # max_iterations=1)
         response = agent_executor.invoke({"input": query})
+        # self.memory = self.memory.save_context(query, response["output"])
         return response
 
 
-print(AgentReact().agent_execution("who is current army's cheif officer")["output"])
+# print(AgentReact().agent_execution("tell my name plz"))
 # print(json.loads("Action Input:"))
