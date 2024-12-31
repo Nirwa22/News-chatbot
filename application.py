@@ -39,10 +39,10 @@ async def vector_database(request: Request, item: Item):
     api = request.headers.get("Authorization")
     if api == Api_token:
         query = item.query
-        chat_history = item.chat_history
         if query:
+            chat_history = item.chat_history
             chat_history = chat_history + f"Human: {query}"
-            print(chat_history)
+            # print(chat_history)
             output = AgentReact().agent_execution(chat_history)["output"]
             return output
         else:

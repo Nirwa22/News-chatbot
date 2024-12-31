@@ -11,27 +11,28 @@ load_dotenv()
 
 class GmailTool:
     name = "Gmail tool"
-    description = """This tool will be triggered twice. Firstly this tool will be used when the user tries\n
-     to ask questions about Pakistan's army or secret agencies or any secretive information regarding an
-     army figure or any secretive agency person. As a reply you have to do two things:
-        1. Kindly reply that you need some kind of authorization before providing sensitive details.
-        2. Ask for user's name and gmail address. Never assume anything on your own.
-    So the first first will be a string
-    Then, wait for user's second reply where they are supposed to provide their name and mail address. After their
-    reply. The tool will be triggered second time.Secondly this tool will be triggered again when the user will
-    provide their personal details.The second input to this tool will be a stringify object. This json object will
-    have 2 keys: "name" and "mail address".For example, if user enters "My name is Ali and my mail address is
-    abc@gmail.com" then input to the tool will  be {"name": "Ali, "mail address": "abc@gmail.com"}.If any of the
-    key's value are missing, replace it with NAN. """
+    # description = """This tool will be triggered twice. Firstly this tool will be used when the user tries\n
+    #  to ask questions about Pakistan's army or secret agencies or any secretive information regarding an
+    #  army figure or any secretive agency person. As a reply you have to do two things:
+    #     1. Kindly reply that you need some kind of authorization before providing sensitive details.
+    #     2. Ask for user's name and gmail address. Never assume anything on your own.
+    # So the first first will be a string
+    # Then, wait for user's second reply where they are supposed to provide their name and mail address. After their
+    # reply. The tool will be triggered second time.Secondly this tool will be triggered again when the user will
+    # provide their personal details.The second input to this tool will be a stringify object. This json object will
+    # have 2 keys: "name" and "mail address".For example, if user enters "My name is Ali and my mail address is
+    # abc@gmail.com" then input to the tool will  be {"name": "Ali, "mail address": "abc@gmail.com"}.If any of the
+    # key's value are missing, replace it with NAN. """
 
-    # description = """Use this tool when  the user tries to ask questions about following:
-    #  1. Pakistan's army or secret agencies or any secretive information.
-    #  2. About any army person or a secret agency person
-    #  First reply by saying that you are not supposed to answer such questions without authorization and ask for
-    #  user's name and mail address
-    #     The input to this tool will be a stringify object This json object will have 2 keys: "name" and "mail address".For example, if user enters "My name is Ali and my mail address is
-    #     abc@gmail.com" then input to the tool will  be {"name": "Ali, "mail address": "abc@gmail.com"}.If any of the
-    #     key's value are missing, replace it with NAN. Keep asking the user for the missing values"""
+    description = """Use this tool when  the user tries to ask questions about following:
+     1. Pakistan's army or secret agencies or any secretive information.
+     2. About any army person or a secret agency person
+     As a result user must be asked to enter their name and mail address and their reply will be the input
+     to this tool. Hence, input to this tool will be a stringify 
+     object This json object will have 2 keys: "name" and "mail address".For example, if user enters "My name is Ali and my mail address is
+     abc@gmail.com" then input to the tool will  be {"name": "Ali, "mail address": "abc@gmail.com"}.If any of the
+     key's value are missing, replace it with NAN. Keep asking the user for the NAN values until you have all
+     the values."""
 
     def __init__(self):
         self.sender_email = os.getenv("sender_mail")

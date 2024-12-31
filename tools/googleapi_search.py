@@ -20,8 +20,8 @@ class GoogleSearchTool:
     name = "Google search tool"
     description = """Use this tool when you can not find relevant content related to Pakistan's history
                      in vector database. For input queries outside the scope of pakistan's news and history
-                     you must not use this tool at all. Input to this tool will be a string query. Output must
-                     be a 5-6 line paragraph"""
+                     you must not use this tool at all. For general queries use your own knowledge database.
+                     Input to this tool will be a string query"""
 
     def __init__(self):
         self.search_method = SerpAPIWrapper()

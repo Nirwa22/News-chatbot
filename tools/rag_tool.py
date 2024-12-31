@@ -26,7 +26,8 @@ class RagTool:
     name = "Rag_tool"
     description = """Use this tool only when the query is related to Pakistan's history and the relevant
                      answer is present in vector database. For general queries
-                    outside the scope of vector database do not use this tool whatsoever """
+                     outside the scope of vector database do not use this tool whatsoever.
+                      For general queries use your own knowledge database"""
 
     def __init__(self):
         # self.embeddings = OpenAIEmbeddings(model="text-embedding-3-large")

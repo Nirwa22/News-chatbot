@@ -20,8 +20,7 @@ class NewsTool:
     name = "News tool"
     description = """Use this tool when you have to answer queries regarding Pakistan's news and people.
                      Always Provide latest news 2024. Do not use this tool for answer queries related to army or army figures at all.
-                     Input to this tool will be a string query. Change output from the
-                     tool to a paragraph always"""
+                     Input to this tool will be a string query.For general queries use your own knowledge database."""
 
     def __init__(self):
         self.search_method = SerpAPIWrapper()
